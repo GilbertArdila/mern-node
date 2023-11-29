@@ -23,7 +23,7 @@ const employeeSchema = new Schema(
         type:String,
         require:true
     },
-    contactType:{
+    contractType:{
         type:String,
         require:true
     },

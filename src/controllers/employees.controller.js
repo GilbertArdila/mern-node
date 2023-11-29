@@ -1,4 +1,5 @@
 import Employee from "../models/employees.model.js";
+import User from "../models/users.model.js";
 import message from "../utilities/message.js";
 const employeeCtrl={};
 
@@ -15,7 +16,7 @@ employeeCtrl.listAllEmployees = async (req,res) =>{
 employeeCtrl.createEmployee = async (req,res) =>{
     try {
         const data = req.body;
-        const response = await Employee.create(data);
+        const response = await Employee.create({...data,user:req.userId});
         message.generalMessage(res,201,true,response,"Employee created successfully")
         
     } catch (error) {
@@ -37,8 +38,8 @@ employeeCtrl.listById=async (req,res)=>{
 
 employeeCtrl.listByBoss = async (req,res) =>{
     try {
-        const {id} = req.params;
-        const response = await Employee.find({user:id});
+        
+        const response = await Employee.find({user:req.userId});
         message.generalMessage(res,200,true,response,"Employees by boos")
     } catch (error) {
         message.generalMessage(res,500,false,null,error.message);
@@ -66,8 +67,8 @@ employeeCtrl.update=async (req,res)=>{
         if(!response){
             return message.generalMessage(res,404,false,null,"Employee not found")
         }
-        await response.updateOne(req.body);
-        return message.generalMessage(res,200,true,response,"employee updated");
+        const updatedData = await response.updateOne(req.body);
+        return message.generalMessage(res,200,true,updatedData,"employee updated");
     } catch (error) {
         message.generalMessage(res,500,false,null,error.message);
     }
@@ -84,7 +85,24 @@ employeeCtrl.findByLastName = async (req,res) =>{
         return message.generalMessage(res,400,true,response,"coincidences");
         }catch (error) {
         message.generalMessage(res,500,false,null,error.message);}
-    } 
+    }
+    
+    employeeCtrl.listAllUsers = async (req,res) =>{
+        try {
+            const response = await User.find();
+
+            const modifiedResponse = response.map(user => {
+                //creamos un objeto nuevo sin el password
+                const { password, ...userWithoutPassword } = user.toObject(); // Convierte el documento a un objeto para manipulación
+                return userWithoutPassword;
+            });
+            
+            return message.generalMessage(res,201,true,modifiedResponse,"List of all users");
+    
+        } catch (error) {
+            message.generalMessage(res,500,false,null,error.message);
+        }
+    }
     
 
 

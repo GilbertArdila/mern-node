@@ -16,8 +16,8 @@ app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 app.use(cors({origin:"*"}));
 
-app.use('/',userRoute)
-app.use('/employee',employeeRoute)
+app.use('/users',userRoute)
+app.use('/employees',employeeRoute)
 
 
 app.listen(app.get("port"),()=>{
