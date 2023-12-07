@@ -14,9 +14,11 @@ export const tokenVerify = (req, res,next)=> {
         return message.generalMessage(res,401,false,null,"no token")
     }
     Jwt.verify(token,config.secret,async(error, payload)=>{
+        
         if(error){
             return message.generalMessage(res,401,false,null,"token invalid")
         }
+        /**cuando se firma el token se incluye el _id en él */
         const {_id} = payload;
         const response = await User.findById(_id);
         if(!response){

@@ -15,9 +15,9 @@ route.get('/boss',
 tokenVerify,
 employeeCtrl.listByBoss);
 
-route.get('/search/:lastName',
+route.get('/search/:term',
 tokenVerify,
-employeeCtrl.findByLastName);
+employeeCtrl.findBySearch);
 
 route.post('/',
 tokenVerify,

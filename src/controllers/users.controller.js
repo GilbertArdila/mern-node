@@ -34,16 +34,18 @@ userCtrl.login = async (req, res) =>{
     try {
         const data = req.body;
         const exist = await User.findOne({email:data.email});
+       
         if(!exist){
-            return message.generalMessage(res,401,false,null,"email does not match")
+            return message.generalMessage(res,401,false,null,"email or password wrong")
         }
         const match = await bcrypt.compare(data.password, exist.password);
         if(match){
             const token =  jwt.sign({_id:exist._id},config.secret);
+            /**este ._doc se le pone por disposiciones de mongo */
             return message.generalMessage(res,201,true,{...exist._doc,password:null,token},"Welcome")
             
         }
-        return message.generalMessage(res,401,false,null,"password does not exist") 
+        return message.generalMessage(res,401,false,null,"email or password wrong") 
         
         
     } catch (error) {
