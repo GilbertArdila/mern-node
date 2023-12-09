@@ -19,7 +19,7 @@ userCtrl.register = async (req, res) =>{
         data.password = await bcrypt.hash(data.password, 10);
        
         const newUser = await User.create(data);
-        const token = jwt.sign({_id: newUser._id},config.secret);
+        const token = jwt.sign({_id: newUser._id},config.secret,{expiresIn:"1h"});
        
         
         
@@ -40,7 +40,7 @@ userCtrl.login = async (req, res) =>{
         }
         const match = await bcrypt.compare(data.password, exist.password);
         if(match){
-            const token =  jwt.sign({_id:exist._id},config.secret);
+            const token =  jwt.sign({_id:exist._id},config.secret,{expiresIn:"1h"});
             /**este ._doc se le pone por disposiciones de mongo */
             return message.generalMessage(res,201,true,{...exist._doc,password:null,token},"Welcome")
             
